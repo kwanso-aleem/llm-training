@@ -5,3 +5,12 @@ export class AiBody {
   @IsNotEmpty()
   prompt: string;
 }
+
+export class IFile {
+  size?: number;
+  encoding?: string;
+  fieldname?: string;
+  buffer: Buffer;
+  mimetype: string;
+  originalname: string;
+}

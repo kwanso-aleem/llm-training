@@ -7,6 +7,15 @@ export const OllamaProvider: FactoryProvider<LanguageModel> = {
   useFactory: () => {
     const ollama = createOllama({
       baseURL: 'http://localhost:11434',
+      // Increase timeout for image processing (5 minutes)
+      fetch: async (url: string | URL | Request, options?: RequestInit) => {
+        return fetch(url, {
+          ...options,
+          // @ts-expect-error - undici supports these timeout options
+          headersTimeout: 300000, // 5 minutes for headers
+          bodyTimeout: 300000, // 5 minutes for body
+        });
+      },
     });
     return ollama('gemma3');
   },

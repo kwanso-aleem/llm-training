@@ -1,13 +1,28 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Post,
+  Controller,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  UploadedFile,
+} from '@nestjs/common';
 import { AiService } from '../services/ai.service';
-import { AiBody } from '../dtos/ai.input';
+import { AiBody, IFile } from '../dtos/ai.input';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('ai')
 export class AiController {
   constructor(private readonly aiService: AiService) {}
 
   @Post('generate-text')
-  async generateText(@Body() body: AiBody) {
-    return await this.aiService.generateText(body.prompt);
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      // fileFilter: (_req, file, callback) => mediaFilesFilter(file, callback),
+    }),
+  )
+  async generateText(@UploadedFile() file: IFile, @Body() body: AiBody) {
+    const { buffer } = file;
+    return await this.aiService.generateText(body.prompt, buffer);
   }
 }

@@ -10,15 +10,26 @@ export class AiService {
   ) {}
 
   /**
-   * Generate text using the AI model
-   * @param prompt - The prompt to generate text from
+   * Generate text using the AI model with optional image input
+   * @param prompt - The text prompt
+   * @param image - Optional image file as Buffer or Uint8Array
    * @returns The generated text
    */
-  async generateText(prompt: string) {
+  async generateText(prompt: string, image?: Buffer | Uint8Array) {
     try {
       const result = await generateText({
         model: this.aiModel,
-        prompt,
+        messages: [
+          {
+            role: 'user',
+            content: image
+              ? [
+                  { type: 'text', text: prompt },
+                  { type: 'image', image },
+                ]
+              : prompt,
+          },
+        ],
       });
       console.log(result);
       return result.text;
