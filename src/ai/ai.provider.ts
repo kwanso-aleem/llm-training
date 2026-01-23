@@ -1,14 +1,13 @@
-import { google } from '@ai-sdk/google';
+import { createOllama } from 'ai-sdk-ollama';
 import { FactoryProvider } from '@nestjs/common';
-import ai from 'ai';
+import type { LanguageModel } from 'ai';
 
-export const GoogleGenerativeAIProvider: FactoryProvider<ai.LanguageModel> = {
-  provide: 'GOOGLE_GENERATIVE_AI',
+export const OllamaProvider: FactoryProvider<LanguageModel> = {
+  provide: 'AI_MODEL',
   useFactory: () => {
-    // return createGoogleGenerativeAI({
-    //   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
-    // });
-
-    return google('gemini-2.5-flash');
+    const ollama = createOllama({
+      baseURL: 'http://localhost:11434',
+    });
+    return ollama('gemma3');
   },
 };
