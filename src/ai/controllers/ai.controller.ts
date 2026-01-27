@@ -8,9 +8,11 @@ import {
   Res,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import { AiService } from '../services/ai.service';
-import { AiBody, ChatBody, IFile } from '../dtos/ai.input';
 import { FileInterceptor } from '@nestjs/platform-express';
+// services
+import { AiService } from '../services/ai.service';
+// inputs
+import { AiBody, ChatBody, IFile } from '../dtos/ai.input';
 
 @Controller('ai')
 export class AiController {
