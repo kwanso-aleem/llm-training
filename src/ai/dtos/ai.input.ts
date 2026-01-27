@@ -1,9 +1,24 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { UIMessage } from 'ai';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class AiBody {
   @IsString()
   @IsNotEmpty()
   prompt: string;
+}
+
+export class ChatBody {
+  @IsNotEmpty()
+  @IsArray()
+  messages: UIMessage[];
+
+  @IsString()
+  @IsOptional()
+  id?: string;
+
+  @IsString()
+  @IsOptional()
+  trigger?: string;
 }
 
 export class IFile {

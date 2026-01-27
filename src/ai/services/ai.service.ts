@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { generateText } from 'ai';
-import type { LanguageModel } from 'ai';
+import { convertToModelMessages, generateText, streamText } from 'ai';
+import type { LanguageModel, StreamTextResult, UIMessage } from 'ai';
 
 @Injectable()
 export class AiService {
@@ -37,5 +37,19 @@ export class AiService {
       console.error(error);
       throw error;
     }
+  }
+
+  // Allow streaming responses up to 30 seconds
+
+  async chat(messages: UIMessage[]): Promise<StreamTextResult<any, any>> {
+    // const maxDuration = 30;
+
+    const result = streamText({
+      model: this.aiModel,
+      system: 'You are a helpful assistant.',
+      messages: await convertToModelMessages(messages),
+    });
+
+    return result;
   }
 }
