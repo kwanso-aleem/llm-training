@@ -1,12 +1,18 @@
+import type { LanguageModel } from 'ai';
 import { createOllama } from 'ai-sdk-ollama';
 import { FactoryProvider } from '@nestjs/common';
-import type { LanguageModel } from 'ai';
+// constants
+import {
+  AppProviders,
+  AI_MODEL_NAME,
+  AI_MODEL_BASE_URL,
+} from './lib/constants';
 
 export const OllamaProvider: FactoryProvider<LanguageModel> = {
-  provide: 'AI_MODEL',
+  provide: AppProviders.AI_MODEL,
   useFactory: () => {
     const ollama = createOllama({
-      baseURL: 'http://localhost:11434',
+      baseURL: AI_MODEL_BASE_URL,
       // Increase timeout for image processing (5 minutes)
       fetch: async (url: string | URL | Request, options?: RequestInit) => {
         return fetch(url, {
@@ -17,6 +23,8 @@ export const OllamaProvider: FactoryProvider<LanguageModel> = {
         });
       },
     });
-    return ollama('gemma3');
+    // Use llama3.2-vision for vision capabilities (image understanding)
+    // Alternative: llava, bakllava, or other vision models
+    return ollama(AI_MODEL_NAME);
   },
 };

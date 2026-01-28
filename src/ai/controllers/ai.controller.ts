@@ -1,34 +1,15 @@
-import {
-  Body,
-  Post,
-  Controller,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-  UploadedFile,
-  Res,
-} from '@nestjs/common';
 import type { Response } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Res, Body, Post, Controller } from '@nestjs/common';
 // services
 import { AiService } from '../services/ai.service';
 // inputs
-import { AiBody, ChatBody, IFile } from '../dtos/ai.input';
+import { ChatBody } from '../dtos/ai.input';
+// constants
+import { AI_MODEL_NAME } from '../lib/constants';
 
 @Controller('ai')
 export class AiController {
   constructor(private readonly aiService: AiService) {}
-
-  @Post('generate-text')
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(
-    FileInterceptor('file', {
-      // fileFilter: (_req, file, callback) => mediaFilesFilter(file, callback),
-    }),
-  )
-  async generateText(@UploadedFile() file: IFile, @Body() body: AiBody) {
-    const { buffer } = file;
-    return await this.aiService.generateText(body.prompt, buffer);
-  }
 
   @Post('chat')
   async chat(@Body() body: ChatBody, @Res() res: Response) {
@@ -44,7 +25,7 @@ export class AiController {
           if (part.type === 'start') {
             return {
               createdAt: Date.now(),
-              model: 'gemma3',
+              model: AI_MODEL_NAME,
             };
           }
 
